@@ -1,0 +1,21 @@
+f13
+# Setup Gogs
+- open http://gogs:3000/
+    - Select the SQLite3 option
+    - Set Domain from "localhost" to "gogs" on the Domain and Application URL
+    - Set Application Url from "localhost" to "gogs"
+    - Email Service Settings
+        - mailhog:1025
+        - gogs@mygogs.com
+    - Server and Other Services Settings
+        - Check Enable Mail Notifications
+        - Unckeck Enable Federated Avatars Lookup
+        - Uncheck Enable Captcha
+    - Select OK
+    - Create the admin account
+    - Login as admin
+    - Add the public ssh key generated from the ./setup/keys folder
+        - Your Profile
+        - Your Settings
+        - SSH Keys
+        - Add Key
