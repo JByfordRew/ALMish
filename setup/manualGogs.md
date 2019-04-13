@@ -1,4 +1,4 @@
-f13
+
 # Setup Gogs
 - open http://gogs:3000/
     - Select the SQLite3 option
