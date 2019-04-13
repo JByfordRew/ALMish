@@ -1,0 +1,22 @@
+f14
+# Setup TeamCity
+- open http://teamcity-server:8111/
+    - Click Proceed
+    - Select HSQLDB (local database)
+    - Accept License
+    - Create the Admin account with an email of your choosing i.e. teamcity@myteamcity.com
+    - Go to Administration > Email Notifier
+        - mailhog
+        - 1025
+        - Test Connection
+    - Add the Agent
+        - Select Unauthorized Agents
+        - Select the Agent listed
+        - Authorize Agent
+    - Setup the ssh keys
+        - On the Administration page (admin/admin.html)
+        - Click under Project-related Settings on the left
+        - On the left click the 'Show more' tab
+        - Click SSH Keys
+        - Click Upload SSH Key
+        - Choose private key file and upload
