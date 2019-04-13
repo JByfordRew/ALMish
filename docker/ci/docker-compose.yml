@@ -1,0 +1,91 @@
+
+version: '3'
+
+volumes:
+  gogsdata:
+    external: true
+  teamcitydata:
+    external: true
+  teamcitylogs:
+    external: true
+  sqldata:
+    external: true
+  mediawikiimages:
+    external: true
+  mediawikidata:
+    external: true
+
+services:
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+
+  gogs:
+    image: gogs/gogs
+    ports:
+      - '10022:22'
+      - '3000:3000'
+    volumes:
+      - gogsdata:/data
+
+  teamcity-server:
+    image: jetbrains/teamcity-server
+    volumes:
+      - teamcitydata:/data/teamcity_server/datadir
+      - teamcitylogs:/opt/teamcity/logs
+    ports:
+      - '8111:8111'
+    environment:
+      - TEAMCITY_SERVER_MEM_OPTS="-Xmx750m"
+    links:
+      - gogs
+      - teamcity-agent
+
+  teamcity-agent:
+    image: jetbrains/teamcity-agent
+    environment:
+      - SERVER_URL=http://teamcity-server:8111
+      - TEAMCITY_SERVER_MEM_OPTS=-Xmx2g -XX:ReservedCodeCacheSize=350m
+    links:
+      - gogs
+
+  sql-instance:
+    image: microsoft/mssql-server-linux
+    container_name: 'sql-instance'
+    # ports:
+    #   - '1433:1433'
+    volumes:
+      - sqldata:/var/opt/mssql
+    environment:
+      - SA_PASSWORD=yourStrong(!)Password
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=Developer
+
+  mediawiki-database:
+    image: mariadb
+    restart: always
+    environment:
+      # @see https://phabricator.wikimedia.org/source/mediawiki/browse/master/includes/DefaultSettings.php
+      - MYSQL_DATABASE = my_wiki
+      - MYSQL_USER = wikiuser
+      - MYSQL_PASSWORD = example
+      - MYSQL_RANDOM_ROOT_PASSWORD = yes
+    volumes:
+      - mediawikidata:/mdbdata
+
+  mediawiki:
+    image: wikimedia/mediawiki
+    restart: always
+    ports:
+      - 8080:80
+    links:
+      - mediawiki-database
+    volumes:
+      - mediawikiimages:/var/www/html/images
+      # After initial setup, download LocalSettings.php to the same directory as
+      # this yaml and uncomment the following line and use compose to restart
+      # the mediawiki service
+      # - ./LocalSettings.php:/var/www/html/LocalSettings.php
