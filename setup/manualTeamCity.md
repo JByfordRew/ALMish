@@ -1,4 +1,4 @@
-f14
+
 # Setup TeamCity
 - open http://teamcity-server:8111/
     - Click Proceed
