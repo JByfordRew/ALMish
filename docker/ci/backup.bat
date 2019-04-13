@@ -1,4 +1,4 @@
-f3
+
 @echo off
 docker-compose down
 call ./volumes/backup.bat gogsdata
